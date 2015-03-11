@@ -1,29 +1,24 @@
-
-
 #include <node.h>
 #include <string>
 #include <iostream>
 
-
 #include "cap.h"
 #include "jpeglib/CImg.h"
 
-  
 using namespace v8;
 using namespace cimg_library;
 
-namespace img_obj{
-	std::string text;
-	std::string filename;
-	int count;
-	int width;
-	int height;
-	int offset;
-	int quality;
-	int isjpeg;
+namespace img_obj {
+  std::string text;
+  std::string filename;
+  int count;
+  int width;
+  int height;
+  int offset;
+  int quality;
+  int isjpeg;
   int fontSize;
 }
-
 
 /*
 args
@@ -38,11 +33,10 @@ return 文件的生成路径给node
 Handle<Value> cap::create(const Arguments& args) {
   HandleScope scope;
 
-  
   img_obj::text = toCString(args[0]->ToString());
 
   img_obj::filename = toCString(args[1]->ToString());
-  
+
   img_obj::count = args[2]->Int32Value();
   img_obj::width = args[3]->Int32Value();
   img_obj::height = args[4]->Int32Value();
@@ -51,25 +45,21 @@ Handle<Value> cap::create(const Arguments& args) {
   img_obj::isjpeg = args[7]->Int32Value();
   img_obj::fontSize = args[8]->Int32Value();
 
-  save();  
-  
+  save();
+
   return scope.Close(String::New((img_obj::filename).c_str()));
 }
 
-
-
 int cap::save(){
-
-
-   const char *captcha_text((img_obj::text).c_str());
-   const char *file_o((img_obj::filename).c_str());
-   int count(img_obj::count);
-   int width(img_obj::width);
-   int height(img_obj::height);
-   int offset(img_obj::offset);
-   int quality(img_obj::quality);
-   int isjpeg(img_obj::isjpeg);
-   int fontSize(img_obj::fontSize);
+  const char *captcha_text((img_obj::text).c_str());
+  const char *file_o((img_obj::filename).c_str());
+  int count(img_obj::count);
+  int width(img_obj::width);
+  int height(img_obj::height);
+  int offset(img_obj::offset);
+  int quality(img_obj::quality);
+  int isjpeg(img_obj::isjpeg);
+  int fontSize(img_obj::fontSize);
 
   // Create captcha image
   //----------------------
@@ -91,13 +81,6 @@ int cap::save(){
                     0,
                     1,
                     fontSize).resize(-100,-100,1,3);
-//      const unsigned int dir = std::rand()%4, wph = tmp.width()+tmp.height();
-//      cimg_forXYC(tmp,x,y,v) {
-//        const int val = dir==0?x+y:(dir==1?x+tmp.height()-y:(dir==2?y+tmp.width()-x:tmp.width()-x+tmp.height()-y));
-//        tmp(x,y,v) = (unsigned char)cimg::max(0.0f,cimg::min(255.0f,1.5f*tmp(x,y,v)*val/wph));
-//      }
-      //if (std::rand()%2) tmp = (tmp.get_dilate(3)-=tmp);
-      //tmp.blur((float)cimg::rand()*0.8f).normalize(0,255);
       const float sin_offset = (float)cimg::crand()*3, sin_freq = (float)cimg::crand()/7;
       cimg_forYC(captcha,y,v) captcha.get_shared_row(y,0,v).shift((int)(4*std::cos(y*sin_freq+sin_offset)));
       captcha.draw_image(count+offset*k,tmp);
@@ -121,7 +104,7 @@ int cap::save(){
                           color.data(),0.6f);
     }
   }
-  captcha|=copy;
+  captcha |= copy;
   captcha.noise(10,2);
 
   captcha = (+captcha).fill(255) - captcha;
@@ -130,23 +113,20 @@ int cap::save(){
   //-------------------------------------
   //std::printf("%s\n",captcha_text);
 
- if(isjpeg){
+  if (isjpeg) {
     captcha.save_jpeg(file_o, quality);
- }
- else{
-	captcha.save(file_o);    
- }
+  }
+  else {
+    captcha.save(file_o);    
+  }
 
-  //std::printf("*********************\n");
   return 0;
-
 }
 
-
 std::string cap::toCString(Handle<Value> strp){
-      String::Utf8Value utf8_value(strp->ToString());//转化成v8::Utf8Value
-      std::string str = *utf8_value;//转化为string
-      return str;
+  String::Utf8Value utf8_value(strp->ToString());//转化成v8::Utf8Value
+  std::string str = *utf8_value;//转化为string
+  return str;
 }
 
 cap::cap(){};
