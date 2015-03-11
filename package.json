@@ -4,7 +4,7 @@
     "email": "saintwinkle@gmail.com"
   },
   "name": "ccap-dev",
-  "description": "node.js generate captcha using c++ library CImg without install any other lib or software",
+  "description": "Fork from 'ccap'",
   "keywords": [
     "node",
     "captcha",
