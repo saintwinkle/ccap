@@ -4,7 +4,7 @@
     "email": "saintwinkle@gmail.com"
   },
   "name": "ccap-dev",
-  "description": "Fork from 'ccap'",
+  "description": "A fork from 'ccap'",
   "keywords": [
     "node",
     "captcha",
@@ -12,7 +12,7 @@
     "image",
     "CImg"
   ],
-  "version": "0.0.2",
+  "version": "0.1.0",
   "homepage": "https://github.com/saintwinkle/ccap",
   "repository": {
     "type": "git",
