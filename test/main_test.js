@@ -19,7 +19,7 @@ assert.equal(Buffer.isBuffer(ary[1]), true);
 
 
 var captcha2 = ccap({
-  generate:function () {
+  generate: function () {
     return "a" + (i++);
   }
 });
@@ -30,7 +30,7 @@ assert.equal(Buffer.isBuffer(ary[1]), true);
 
 var captcha3 = ccap({
   width: 128,
-  generate:function () {
+  generate: function () {
     return "a" + (i++);
   }
 });
@@ -43,7 +43,7 @@ var captcha4 = ccap({
   offset: 30,
   textlen: 6,
   quality: 10,
-  generate:function () {
+  generate: function () {
     return "a" + (i++);
   }
 });
@@ -55,7 +55,7 @@ assert.equal(Buffer.isBuffer(ary[1]), true);
 var captcha5 = ccap({
   offset: 30,
   width: 300,
-  generate:function () {
+  generate: function () {
     return "a" + (i++);
   }
 });

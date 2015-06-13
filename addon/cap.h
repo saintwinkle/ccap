@@ -5,6 +5,7 @@
 #include <string>
 
 using namespace v8;
+
 class cap {
   public:
     static void create(const FunctionCallbackInfo<Value>& args);
