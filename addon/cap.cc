@@ -30,8 +30,9 @@ args
 5-偏移
 return 文件的生成路径给node
 */
-Handle<Value> cap::create(const Arguments& args) {
-  HandleScope scope;
+void cap::create(const FunctionCallbackInfo<Value>& args) {
+  Isolate* isolate = Isolate::GetCurrent();
+  HandleScope scope(isolate);
 
   img_obj::text = toCString(args[0]->ToString());
 
@@ -47,7 +48,7 @@ Handle<Value> cap::create(const Arguments& args) {
 
   save();
 
-  return scope.Close(String::New((img_obj::filename).c_str()));
+  args.GetReturnValue().Set(String::NewFromUtf8(isolate, (img_obj::filename).c_str()));
 }
 
 int cap::save(){
@@ -117,7 +118,7 @@ int cap::save(){
     captcha.save_jpeg(file_o, quality);
   }
   else {
-    captcha.save(file_o);    
+    captcha.save(file_o);
   }
 
   return 0;
