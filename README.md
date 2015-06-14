@@ -2,43 +2,57 @@
 
 A fork from [ccap](https://github.com/DoubleSpout/ccap).
 
+More simple to set additional parameters.
+
 ### Install
 
 ``` bash
 $ npm install ccap-dev
 ```
 
-### Features
+### Additional Parameters
 
-- Add text length in options
+- textLen
 
-``` js
-var http = require('http');
+  Length of captcha text.
+
+  *Default to 6.*
+
+- noiseType
+
+  Type of additive noise.
+  0: Gaussian
+  1: Uniform
+  2: Salt and Pepper
+  3: Poisson
+  4: Rician
+
+  *Default to 2.*
+
+- noiseSigma
+
+  Amplitude of the random additive noise.
+
+  *Default to 1.*
+
+### Example
+
+You can define captcha like this:
+
+``` javascript
 var ccap = require('ccap-dev')({
-  textlen: 4, // 6 by default
   width: 120,
-  height: 40,
-  offset: 25,
+  height: 36,
+  offset: 24,
   quality: 100,
-  fontsize: 36
+  fontSize: 24,
+  textLen: 5,
+  noiseType: 2,
+  noiseSigma: 1
 });
-
-http.createServer(function (req, res) {
-  if(req.url == '/favicon.ico')
-    return res.end('');
-
-  var ary = ccap.get();
-  var txt = ary[0];
-  var buf = ary[1];
-
-  res.end(buf);
-  console.log(txt);
-}).listen(8124);
-
-console.log('Server running at http://127.0.0.1:8124/');
 ```
 
-- TODO
+More usages: [ccap](https://github.com/DoubleSpout/ccap)
 
 ### License
 

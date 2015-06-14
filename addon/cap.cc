@@ -18,6 +18,8 @@ namespace img_obj {
   int quality;
   int isjpeg;
   int fontSize;
+  int noiseType;
+  int noiseSigma;
 }
 
 void cap::create(const FunctionCallbackInfo<Value>& args) {
@@ -33,6 +35,8 @@ void cap::create(const FunctionCallbackInfo<Value>& args) {
   img_obj::quality  = args[6]->Int32Value();
   img_obj::isjpeg   = args[7]->Int32Value();
   img_obj::fontSize = args[8]->Int32Value();
+  img_obj::noiseType = args[9]->Int32Value();
+  img_obj::noiseSigma = args[10]->Int32Value();
 
   save();
 
@@ -49,13 +53,15 @@ int cap::save() {
   int quality(img_obj::quality);
   int isjpeg(img_obj::isjpeg);
   int fontSize(img_obj::fontSize);
+  int noiseType(img_obj::noiseType);
+  int noiseSigma(img_obj::noiseSigma);
 
   // Write colored and distorted text
   CImg<unsigned char> captcha(width, height, 1, 3, 0), color(3);
-  const unsigned char red[] = {255, 0, 0}, green[] = {0, 255, 0}, blue[] = {0, 0, 255};
+  const unsigned char foreground_color[] = {255, 0, 0}, background_color[] = {0, 0, 0};
 
   char letter[2] = {0};
-  for (unsigned int k = 0; k < count; ++k) {
+  for (int k = 0; k < count; ++k) {
     CImg<unsigned char> tmp;
     *letter = captcha_text[k];
     if (*letter) {
@@ -63,13 +69,13 @@ int cap::save() {
       tmp.draw_text((int)(2 + 8 * cimg::rand()),
                     (int)(12 * cimg::rand()),
                     letter,
-                    red,
-                    0,
+                    foreground_color,
+                    background_color,
                     1,
                     fontSize).resize(-100, -100, 1, 3);
       const float sin_offset = (float)cimg::crand() * 3, sin_freq = (float)cimg::crand() / 7;
       cimg_forYC(captcha, y, v) captcha.get_shared_row(y, 0, v).shift((int)(4 * std::cos(y * sin_freq + sin_offset)));
-      captcha.draw_image(count + offset * k,tmp);
+      captcha.draw_image(count + offset * k, tmp);
     }
   }
 
@@ -77,7 +83,7 @@ int cap::save() {
   CImg<unsigned char> copy = (+captcha).fill(0);
   for (unsigned int l = 0; l < 3; ++l) {
     if (l) copy.blur(0.5f).normalize(0, 148);
-    for (unsigned int k = 0; k < 10; ++k) {
+    for (unsigned int k = 0; k < 1; ++k) {
       cimg_forX(color, i) color[i] = (unsigned char)(128 + cimg::rand() * 127);
       if (cimg::rand() < 0.5f)
         copy.draw_circle((int)(cimg::rand() * captcha.width()),
@@ -96,7 +102,7 @@ int cap::save() {
     }
   }
   captcha |= copy;
-  captcha.noise(10, 2);
+  captcha.noise(noiseSigma, noiseType);
   captcha = (+captcha).fill(255) - captcha;
 
   if (isjpeg)
